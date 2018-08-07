@@ -1,15 +1,18 @@
-import pandas as pd
-from gensim.models import Word2Vec
-import logging
-from nltk import word_tokenize
 import numpy as np
-import random
+import pandas as pd
+import logging
 import json
 import operator
 import sys
+import string
+from gensim.models import Word2Vec
+from nltk import word_tokenize
 from sklearn.cluster import KMeans
 from sklearn.model_selection import train_test_split
+from sklearn.feature_extraction.text import TfidfVectorizer
+from nltk.corpus import stopwords
 from heapq import nlargest
+
 
 # import dataset
 X = pd.read_csv('tmdb_5000_movies.csv')
@@ -22,19 +25,15 @@ data = pd.concat([X, Y.iloc[:, 2:]], axis=1)
 data.drop('homepage', axis=1, inplace=True)
 data.drop('spoken_languages', axis=1, inplace=True)
 data.drop('status', axis=1, inplace=True)
-data.drop('title', axis=1, inplace=True)
+data.drop('original_title', axis=1, inplace=True)
 data.drop('vote_count', axis=1, inplace=True)
-
-# split train and test set
-train, test = train_test_split(data, test_size=0.2)
-
 
 # collect important words
 def popular(feature):
     dic = {}
     li = []
 
-    for example in train[feature]:
+    for example in data[feature]:
         diclist = json.loads(example)
         counter = 0
         minilist = []
@@ -87,6 +86,7 @@ def top(dic):
 genr = popular('genres')
 keyw = popular('keywords')
 comp = popular('production_companies')
+cont = popular('production_countries')
 acto = popular('cast')
 dito = popular('crew')
 
@@ -197,12 +197,12 @@ class User:
         print(self.word_vector)
 
 class Model:
-    def __init__(self,user_vector,training_set):
+    def __init__(self,user_vector,dataset):
         self.uv = user_vector
-        self.train = training_set
+        self.data = dataset
         """
         ['budget', 'genres',  'id', 'keywords', 
-        'original_language', 'original_title', 'overview', 
+        'original_language', 'title', 'overview', 
         'popularity','production_companies', 
         'production_countries', 'release_date', 
         'revenue', 'runtime', 'tagline', 
@@ -210,38 +210,51 @@ class Model:
         """
 
 class WordEmbeddings:
-    def __init__(self,training_set):
-        self.train = training_set
+    def __init__(self,dataset):
+        self.data = dataset
+        self.stw = stopwords.words("english")
+        self.stop = self.stw + list(string.punctuation)
+        self.genre = genr[1]
+        self.keyword = keyw[1]
+        self.company = comp[1]
+        self.country = cont[1]
+        self.actor = acto[1]
+        self.director = dito[1]
 
-    def f_genres(self):
-        #Take first 3 genres (param = 3)
-        genre_data = genr[1]
-        genre_model = Word2Vec(genre_data, size=10, workers=4)
-
-    def f_keywords(self):
-        #Take all
-        keywords_data = keyw[1]
-        keywords_model = Word2Vec(keywords_data, size=10, workers=4)
+    def get_vectors(self,feature_data,n,name):
+        #get w2v model of genre,keyword,company,country,actor,director
+        model = Word2Vec(feature_data, size=n, workers=4)
+        model_name = name + ".bin"
+        model.save(model_name)
+        return model
 
     def overview(self):
-        #Text normalization and select top 30 words with tf-idf
-        #Non available data -> mean of other values
-        pass
+        #return 4803 of vectors
+        overview_data = self.data['overview']
+        v = TfidfVectorizer(token_pattern=r"(?u)\b\w+\b", stop_words=self.stw,\
+                            ngram_range=(1,1), analyzer='word')
+        overview_vector = v.fit_transform(overview_data.values.astype(str))
+        overview_vec_array = overview_vector.toarray()
+        return overview_vec_array
+        
+    def tag_title(self,feature):
+        #'tagline','title'
+        alist = []
+        data_s = self.data[feature]
+        for sent in data_s:
+            if isinstance(sent,str):
+                alist.append([o for o in word_tokenize(sent.lower()) if o not in self.stop])
+        return self.get_vectors(alist,3,feature)
 
-    def pro_comp(self):
-        pass
-
-    def pro_cont(self):
-        pass
-
-    def tagline(self):
-        pass
-
-    def cast(self):
-        pass
-
-    def crew(self):
-        pass
+    def release_date(self):
+        alist = []
+        self.data['release_date'] = pd.to_datetime(self.data['release_date'])
+        recent_date = self.data['release_date'].max()
+        for date in self.data['release_date']:
+            if data:
+                alist.append(pd.Timedelta(recent_date - date))
+            else:
+                alist.append('Nan')
 
     def load(self):
         try:
@@ -249,22 +262,46 @@ class WordEmbeddings:
             self.keywords = Word2Vec.load('keywords.bin')
             self.pro_comp = Word2Vec.load('pro_comp.bin')
             self.pro_cont = Word2Vec.load('pro_cont.bin')
-            self.tagline = Word2Vec.load('tagline.bin')
             self.cast = Word2Vec.load('cast.bin')
             self.crew = Word2Vec.load('crew.bin')
+            self.tagline = Word2Vec.load('tagline.bin')
+            self.title = Word2Vec.load('title.bin')
+            
         except:
-            print("models are not ready.")
-        # 1)
-        # first, make a list of whole words
-        # and then do word_embeddings
+            self.get_vectors(self.genre,10,'genres')
+            self.get_vectors(self.keyword,10,'keywords')
+            self.get_vectors(self.company,10,'pro_comp')
+            self.get_vectors(self.country,10,'pro_cont')
+            self.get_vectors(self.actor,10,'cast')
+            self.get_vectors(self.director,10,'crew')
+            self.tag_title('tagline')
+            self.tag_title('title')
 
-
+class BuildStructure:
+    def __init__(original_data,m_genre,m_keywords,m_pro_comp,\
+                 m_pro_cont,m_cast,m_crew,m_tagline,m_title):
+        
+        self.original_data = original_data
+        self.m_genre = m_genre
+        self.m_keywords = m_keywords
+        self.m_pro_comp = m_pro_comp
+        self.m_pro_cont = m_pro_cont
+        self.m_cast = m_cast
+        self.m_crew = m_crew
+        self.m_tagline = m_tagline
+        self.m_title = m_title
+    
 
 if __name__ == "__main__":
     X = User(gen, key, com, act, dit)
     X.start()
-    Y = Model(X.word_vector,data)
-
+    Z = WordEmbeddings(data)
+    Z.load()
+    print()
+    B = BuildStructure(data,Z.genres, Z.keywords, Z.pro_comp, Z.pro_cont,\
+                       Z.cast, Z.crew, Z.tagline, Z.title)
+    
+    
 # preprocess the data
 # -- depending on important(frequent) words,
 #    select 20 different examples as test set.
