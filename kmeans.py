@@ -3,12 +3,15 @@ import pandas as pd
 import json
 import sys
 import string
+import re
 from gensim.models import Word2Vec
 from nltk import word_tokenize
 from sklearn.cluster import KMeans
 from sklearn.feature_extraction.text import TfidfVectorizer
 from nltk.corpus import stopwords
+from nltk.stem.snowball import SnowballStemmer
 from heapq import nlargest
+
 
 # import dataset
 X = pd.read_csv('tmdb_5000_movies.csv')
@@ -219,6 +222,7 @@ class WordEmbeddings:
         self.country = cont[1]
         self.actor = acto[1]
         self.director = dito[1]
+        self.stemmer = SnowballStemmer("english")
 
     @staticmethod
     def get_vectors(self, feature_data, n, name):
@@ -228,12 +232,32 @@ class WordEmbeddings:
         model.save(model_name)
         return model
 
+    def stem_tokens(self,tokens, stemmer):
+        alist = []
+        for token in tokens:
+            alist.append(stemmer.stem(token))
+        return alist
+
+    def tokenize(self,text):
+        tokens = word_tokenize(text)
+        stems = self.stem_tokens(tokens,self.stemmer)
+        return stems
+
     def overview(self):
         # return 4803 of vectors
         overview_data = self.data['overview']
-        v = TfidfVectorizer(token_pattern=r"(?u)\b\w+\b", stop_words=self.stw,
+        filtered_data = []
+        
+        for example in overview_data:
+            f = self.tokenize(example)
+            filtered = ' '.join(f)
+            filtered_data.append(filtered)
+        print(filtered_data[0:10])
+            
+        v = TfidfVectorizer(stop_words=self.stw,
                             ngram_range=(1, 1), analyzer='word')
-        overview_vector = v.fit_transform(overview_data.values.astype(str))
+        
+        overview_vector = v.fit_transform(filtered_data.values.astype(str))
         overview_vec_array = overview_vector.toarray()
         return overview_vec_array
 
