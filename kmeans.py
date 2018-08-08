@@ -1,18 +1,14 @@
 import numpy as np
 import pandas as pd
-import logging
 import json
-import operator
 import sys
 import string
 from gensim.models import Word2Vec
 from nltk import word_tokenize
 from sklearn.cluster import KMeans
-from sklearn.model_selection import train_test_split
 from sklearn.feature_extraction.text import TfidfVectorizer
 from nltk.corpus import stopwords
 from heapq import nlargest
-
 
 # import dataset
 X = pd.read_csv('tmdb_5000_movies.csv')
@@ -27,6 +23,7 @@ data.drop('spoken_languages', axis=1, inplace=True)
 data.drop('status', axis=1, inplace=True)
 data.drop('original_title', axis=1, inplace=True)
 data.drop('vote_count', axis=1, inplace=True)
+
 
 # collect important words
 def popular(feature):
@@ -196,8 +193,9 @@ class User:
         self.word_vector = [theme_, word_, comp_, act_, dire_]
         print(self.word_vector)
 
+
 class Model:
-    def __init__(self,user_vector,dataset):
+    def __init__(self, user_vector, dataset):
         self.uv = user_vector
         self.data = dataset
         """
@@ -209,8 +207,9 @@ class Model:
         'vote_average', 'cast', 'crew']
         """
 
+
 class WordEmbeddings:
-    def __init__(self,dataset):
+    def __init__(self, dataset):
         self.data = dataset
         self.stw = stopwords.words("english")
         self.stop = self.stw + list(string.punctuation)
@@ -221,30 +220,31 @@ class WordEmbeddings:
         self.actor = acto[1]
         self.director = dito[1]
 
-    def get_vectors(self,feature_data,n,name):
-        #get w2v model of genre,keyword,company,country,actor,director
+    @staticmethod
+    def get_vectors(self, feature_data, n, name):
+        # get w2v model of genre,keyword,company,country,actor,director
         model = Word2Vec(feature_data, size=n, workers=4)
         model_name = name + ".bin"
         model.save(model_name)
         return model
 
     def overview(self):
-        #return 4803 of vectors
+        # return 4803 of vectors
         overview_data = self.data['overview']
-        v = TfidfVectorizer(token_pattern=r"(?u)\b\w+\b", stop_words=self.stw,\
-                            ngram_range=(1,1), analyzer='word')
+        v = TfidfVectorizer(token_pattern=r"(?u)\b\w+\b", stop_words=self.stw,
+                            ngram_range=(1, 1), analyzer='word')
         overview_vector = v.fit_transform(overview_data.values.astype(str))
         overview_vec_array = overview_vector.toarray()
         return overview_vec_array
-        
-    def tag_title(self,feature):
-        #'tagline','title'
+
+    def tag_title(self, feature):
+        # 'tagline','title'
         alist = []
         data_s = self.data[feature]
         for sent in data_s:
-            if isinstance(sent,str):
+            if isinstance(sent, str):
                 alist.append([o for o in word_tokenize(sent.lower()) if o not in self.stop])
-        return self.get_vectors(alist,3,feature)
+        return self.get_vectors(alist, 3, feature)
 
     def release_date(self):
         alist = []
@@ -266,21 +266,21 @@ class WordEmbeddings:
             self.crew = Word2Vec.load('crew.bin')
             self.tagline = Word2Vec.load('tagline.bin')
             self.title = Word2Vec.load('title.bin')
-            
+
         except:
-            self.get_vectors(self.genre,10,'genres')
-            self.get_vectors(self.keyword,10,'keywords')
-            self.get_vectors(self.company,10,'pro_comp')
-            self.get_vectors(self.country,10,'pro_cont')
-            self.get_vectors(self.actor,10,'cast')
-            self.get_vectors(self.director,10,'crew')
+            self.get_vectors(self.genre, 10, 'genres')
+            self.get_vectors(self.keyword, 10, 'keywords')
+            self.get_vectors(self.company, 10, 'pro_comp')
+            self.get_vectors(self.country, 10, 'pro_cont')
+            self.get_vectors(self.actor, 10, 'cast')
+            self.get_vectors(self.director, 10, 'crew')
             self.tag_title('tagline')
             self.tag_title('title')
 
+
 class BuildStructure:
-    def __init__(original_data,m_genre,m_keywords,m_pro_comp,\
-                 m_pro_cont,m_cast,m_crew,m_tagline,m_title):
-        
+    def __init__(self, original_data, m_genre, m_keywords, m_pro_comp,
+                 m_pro_cont, m_cast, m_crew, m_tagline, m_title):
         self.original_data = original_data
         self.m_genre = m_genre
         self.m_keywords = m_keywords
@@ -290,7 +290,34 @@ class BuildStructure:
         self.m_crew = m_crew
         self.m_tagline = m_tagline
         self.m_title = m_title
-    
+        self.datadict = {}
+
+    def overview(self):
+        pass
+
+    def rel_date(self):
+        pass
+
+    def fill_dict(self):
+        result_dict = {}
+        for feature in list(self.original_data):
+            result_dict['id'] = self.make_list('id')
+        
+
+    def make_list(self,feature):    
+        res = []
+        for i in range(len(self.original_data)):
+            result_list.append(self.original_data[feature][i])
+        return res
+            
+            
+        # dict = {'id':333. d}
+        # replace the data with numbers
+        # fill the Nan data with mean of the rest
+        # make a list including dummy value (np.nan)
+        # put the list in dictionary mapping with id
+
+
 
 if __name__ == "__main__":
     X = User(gen, key, com, act, dit)
@@ -298,33 +325,5 @@ if __name__ == "__main__":
     Z = WordEmbeddings(data)
     Z.load()
     print()
-    B = BuildStructure(data,Z.genres, Z.keywords, Z.pro_comp, Z.pro_cont,\
+    B = BuildStructure(data, Z.genres, Z.keywords, Z.pro_comp, Z.pro_cont,
                        Z.cast, Z.crew, Z.tagline, Z.title)
-    
-    
-# preprocess the data
-# -- depending on important(frequent) words,
-#    select 20 different examples as test set.
-# -- tokenization of overview, title, tagline
-
-# -- select word embeddings method, clustering function
-
-# form a vectorspace with different word embeddings
-# -- set a data shape
-# -- create function with sklean.tfidfVectorizer
-# -- create function with countvector
-# -- create function with continuous bag of words
-# -- make a function that makes dummy
-# -- set a function for making vector space
-
-# run the kmeans clustering
-# -- create two functions(1. sklearn kmeans, 2.sklearn minibatch kmeans, 3.tensorflow)
-# -- input vectors
-# -- run the kmeans clustering with cluster = 10(not fixed)
-# -- map the data by group
-# -- present the group with title
-# -- Input test examples and present the title by group
-
-# Evaluation ( asking people, analysis etc.)
-# -- Hand made evaluation
-# -- ask people
