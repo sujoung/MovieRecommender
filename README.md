@@ -12,9 +12,9 @@
 * Precision, Recall, F1 score
 * Mean average precision
 
-------------------------------------------------------------
-If you have only.py files
-------------------------------------------------------------
+
+## If you have only.py files
+
 1) Please download .csv files from
 
 * https://www.kaggle.com/tmdb/tmdb-movie-metadata - > size: 9 MB
@@ -25,13 +25,13 @@ If you have only.py files
 4) python3 make_dummy_eval.py
 5) python3 fill_dummpy.py
 * It takes quite long time, prepare a movie and watch it...
-------------------------------------------------------------
-
-------------------------------------------------------------
-If you already have everything (.model, .pkl)
-------------------------------------------------------------
 6) python3 sujoungs_recommender.py
--------------------------------------------------------------
+
+
+
+## If you already have everything (.model, .pkl)
+python3 sujoungs_recommender.py
+
 
 ## Make sure that you have all the .csv files needed
 * tmdb_5000_movies.csv
