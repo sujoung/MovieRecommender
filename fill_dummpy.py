@@ -6,7 +6,6 @@ dummy = pickle.load(open('dummy_eval.pkl', 'rb'))
 id_ = pickle.load(open('user_id.pkl', 'rb'))
 index2id = dict(enumerate(id_))
 
-
 # From Waylon Flinn's answer: https://stackoverflow.com/a/20687984/8626681
 # base similarity matrix (all dot products)
 # replace this with dummy.dot(dummy.T).toarray() for sparse representation
