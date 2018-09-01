@@ -25,7 +25,14 @@ A.
 -------------------------------------------------------------
 
 ## Make sure that you have .csv files.
-(tmdb_5000_movies.csv, tmdb_5000_credits.csv ratings.csv, links.csv)
+* tmdb_5000_movies.csv
+* tmdb_5000_credits.csv
+* ratings.csv
+* links.csv
+-------------------------------------------------------------------
+* https://www.kaggle.com/tmdb/tmdb-movie-metadata - > size: 9 MB
+* https://grouplens.org/datasets/movielens/latest/ - > ml-latest-small.zip (size: 1 MB)
+-----------------------------------------------------------------------
 
 ## Packages used:
 * numpy
