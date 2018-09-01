@@ -1,7 +1,7 @@
 import pandas as pd
 import numpy as np
 import pickle
-import kmeans as mainfile
+import sujoungs_recommender as mainfile
 
 data = mainfile.data
 links = pd.read_csv("links.csv")
