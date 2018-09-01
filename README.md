@@ -1,8 +1,8 @@
 # Movie Recommender system
 
-* language : python3
-* source : tmdb 5000 database from kaggle, movielens data(ml-latest-small)
-* description : This is a movie recommender system. When you execute program, system asks you what movie you like and dislike and based on your preference, it recommends similar movies. For evaluation, actual users' ratings dataset is used. Using Pearson correlation coefficient, the missing parts of the rating data are filled.
+* Language : python3
+* Source : tmdb 5000 database from kaggle, movielens data(ml-latest-small)
+* Description : This is a movie recommender system. When you execute program, system asks you what movie you like and dislike and based on your preference, it recommends similar movies. For evaluation, actual users' ratings dataset is used. Using Pearson correlation coefficient, the missing parts of the rating data are filled.
 * This is an indivisual project of Uppsala University's Information Retrieval Course.
 
 ## There are two types of models (Choose one of them)
