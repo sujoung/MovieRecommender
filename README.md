@@ -19,19 +19,25 @@
 
 * https://www.kaggle.com/tmdb/tmdb-movie-metadata - > size: 9 MB
 * https://grouplens.org/datasets/movielens/latest/ - > ml-latest-small.zip (size: 1 MB)
-
-2) python3 doc2vec_features.py
-3) python3 train_kmeans.py
-4) python3 make_dummy_eval.py
-5) python3 fill_dummpy.py
+2) Type commands below on terminal
+```
+python3 doc2vec_features.py
+python3 train_kmeans.py
+python3 make_dummy_eval.py
+python3 fill_dummpy.py
+```
 * It takes quite long time, prepare a movie and watch it...
-6) python3 sujoungs_recommender.py
-
+3) Execute the main file
+```
+python3 sujoungs_recommender.py
+```
 
 
 ## If you already have everything (.model, .pkl)
+simply execute the main file
+```
 python3 sujoungs_recommender.py
-
+```
 
 ## Make sure that you have all the .csv files needed
 * tmdb_5000_movies.csv
