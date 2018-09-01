@@ -15,6 +15,7 @@ A.
 5) python3 train_kmeans.py
 6) python3 make_dummy_eval.py
 7) python3 fill_dummpy.py
+* It takes quite long time, prepare a movie and watch it...
 ------------------------------------------------------------
 
 ------------------------------------------------------------
