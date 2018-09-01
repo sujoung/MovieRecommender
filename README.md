@@ -3,7 +3,7 @@
 language : python
 source : tmdb 5000 database from kaggle, movielens data(ml-latest-small)
 
-##Q. How to run?
+## Q. How to run?
 A.
 1) Download all data in a folder
 2) Open terminal
@@ -23,10 +23,10 @@ A.
 8) python3 sujoungs_recommender.py
 -------------------------------------------------------------
 
-##Make sure that you have .csv files.
+## Make sure that you have .csv files.
 (tmdb_5000_movies.csv, tmdb_5000_credits.csv ratings.csv, links.csv)
 
-##Packages used:
+## Packages used:
 numpy
 pandas
 json
