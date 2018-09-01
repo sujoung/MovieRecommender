@@ -28,11 +28,11 @@ A.
 (tmdb_5000_movies.csv, tmdb_5000_credits.csv ratings.csv, links.csv)
 
 ## Packages used:
-numpy
-pandas
-json
-gensim
-scikit-learn
-nltk
-heapq
-yellowbrick
+* numpy
+* pandas
+* json
+* gensim
+* scikit-learn
+* nltk
+* heapq
+* yellowbrick
