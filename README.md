@@ -4,12 +4,12 @@ language : python
 source : tmdb 5000 database from kaggle, movielens data(ml-latest-small)
 
 ## Q. How to run?
-A.
+
 1) Download all data in a folder
 2) Open terminal
 3) cd YOUR PATH
 ------------------------------------------------------------
--------------------If you have only.py files ------------
+If you have only.py files
 ------------------------------------------------------------
 4) Please download .csv files from
 
@@ -24,7 +24,7 @@ A.
 ------------------------------------------------------------
 
 ------------------------------------------------------------
------If you already have everything (.model, .pkl)----------
+If you already have everything (.model, .pkl)
 ------------------------------------------------------------
 9) python3 sujoungs_recommender.py
 -------------------------------------------------------------
