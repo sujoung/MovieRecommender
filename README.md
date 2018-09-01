@@ -1,35 +1,39 @@
 # Movie Recommender system
 
-language : python
-source : tmdb 5000 database from kaggle, movielens data(ml-latest-small)
+* language : python3
+* source : tmdb 5000 database from kaggle, movielens data(ml-latest-small)
+* description : This is a movie recommender system. When you execute program, system asks you what movie you like and dislike and based on your preference, it recommends similar movies. For evaluation, actual users' ratings dataset is used. Using Pearson correlation coefficient, the missing parts of the rating data are filled.
 
-## Q. How to run?
+## There are two types of models (Choose one of them)
+* cosine similarity model : extract features, find N most similar movies, concatenate
+* k-means clustering model : integrate feature information into one string, clustering
 
-1) Download all data in a folder
-2) Open terminal
-3) cd YOUR PATH
+## There are two types of evaluation
+* Precision, Recall, F1 score
+* Mean average precision
+
 ------------------------------------------------------------
 If you have only.py files
 ------------------------------------------------------------
-4) Please download .csv files from
+1) Please download .csv files from
 
 * https://www.kaggle.com/tmdb/tmdb-movie-metadata - > size: 9 MB
 * https://grouplens.org/datasets/movielens/latest/ - > ml-latest-small.zip (size: 1 MB)
 
-5) python3 doc2vec_features.py
-6) python3 train_kmeans.py
-7) python3 make_dummy_eval.py
-8) python3 fill_dummpy.py
+2) python3 doc2vec_features.py
+3) python3 train_kmeans.py
+4) python3 make_dummy_eval.py
+5) python3 fill_dummpy.py
 * It takes quite long time, prepare a movie and watch it...
 ------------------------------------------------------------
 
 ------------------------------------------------------------
 If you already have everything (.model, .pkl)
 ------------------------------------------------------------
-9) python3 sujoungs_recommender.py
+6) python3 sujoungs_recommender.py
 -------------------------------------------------------------
 
-## Make sure that you have .csv files.
+## Make sure that you have all the .csv files needed
 * tmdb_5000_movies.csv
 * tmdb_5000_credits.csv
 * ratings.csv
