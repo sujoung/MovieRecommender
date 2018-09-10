@@ -5,7 +5,7 @@
 * Description : This is a movie recommender system. When you execute program, system asks you what movie you like and dislike and based on your preference, it recommends similar movies. For evaluation, actual users' ratings dataset is used. Using Pearson correlation coefficient, the missing parts of the rating data are filled.
 * This is an indivisual project of Uppsala University's Information Retrieval Course.
 
-## There are two types of models (Choose one of them)
+## There are two types of models (Choose one)
 * cosine similarity model : extract features, find N most similar movies, concatenate
 * k-means clustering model : integrate feature information into one string, clustering
 
