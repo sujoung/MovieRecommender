@@ -14,7 +14,7 @@
 * Mean average precision
 
 
-## If you have only.py files
+## If you have only ".py" files
 
 1) Please download .csv files from
 
